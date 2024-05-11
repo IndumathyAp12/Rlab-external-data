@@ -83,29 +83,27 @@ async function myFunction() {
  * This function should execute immediately.
  */
 async function initialLoad() {
-  try {
+    try {
       const response = await fetch('https://api.thecatapi.com/v1/breeds');
       const breeds = await response.json();
-
+  
       const breedSelect = document.getElementById('breedSelect');
-
+  
       breeds.forEach(breed => {
-          const option = document.createElement('option');
-          option.value = breed.id;
-          option.textContent = breed.name;
-          breedSelect.appendChild(option);
+        const option = document.createElement('option');
+        option.value = breed.id;
+        option.textContent = breed.name;
+        breedSelect.appendChild(option);
       });
-  } catch (error) {
+    } catch (error) {
       console.error('Error loading breeds:', error);
+    }
   }
-}
-
-
-
-document.addEventListener("DOMContentLoaded", (evt) => {
-initialLoad();
-  console.log("DOM fully loaded");
-})
+  
+  // Call initialLoad function immediately
+  initialLoad();
+  
+  console.log("Script loaded");
 /**
  * 2. Create an event handler for breedSelect that does the following:
  * - Retrieve information on the selected breed from the cat API using fetch().
