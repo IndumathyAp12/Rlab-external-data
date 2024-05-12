@@ -225,9 +225,6 @@ document.addEventListener("DOMContentLoaded", async (event) => {
     initialLoad();
   });
   
-
-
-  
   
 /**
  * 3. Fork your own sandbox, creating a new one named "JavaScript Axios Lab."
@@ -241,6 +238,119 @@ document.addEventListener("DOMContentLoaded", async (event) => {
  *   by setting a default header with your API key so that you do not have to
  *   send it manually with all of your requests! You can also set a default base URL!
  */
+import axios from 'axios';
+
+document.addEventListener("DOMContentLoaded", async (event) => {
+  // Set default headers with API key
+  axios.defaults.headers.common['x-api-key'] = 'live_AZxU2Ob52eWfjYudw0dHJLfjd9IWmTaUxFMYat5MNV2skaBlKhQOHqueCbsCxm4b'; 
+
+  // Function to clear and repopulate carousel
+  async function updateCarousel(selectedBreedId) {
+    const carousel = document.getElementById('carouselExampleControls'); 
+    const infoDump = document.getElementById('infoDump');
+
+    if (!carousel || !infoDump) {
+      console.error("Carousel or infoDump element not found.");
+      return;
+    }
+
+    // Clear carousel and infoDump
+    carousel.querySelector('.carousel-inner').innerHTML = ''; 
+    infoDump.innerHTML = ''; 
+
+    try {
+      // Fetch information on the selected breed
+      const response = await axios.get(`https://api.thecatapi.com/v1/images/search?breed_id=${selectedBreedId}&limit=5`);
+      const breedImages = response.data;
+
+      // Create carousel elements
+      const carouselInner = carousel.querySelector('.carousel-inner');
+      breedImages.forEach(imageData => {
+        const img = document.createElement('img');
+        img.src = imageData.url;
+        img.alt = 'Cat Image';
+        img.classList.add('d-block', 'w-100'); 
+        const carouselItem = document.createElement('div');
+        carouselItem.classList.add('carousel-item');
+        carouselItem.appendChild(img);
+        carouselInner.appendChild(carouselItem);
+      });
+
+      // Activate first carousel item
+      carouselInner.firstChild.classList.add('active');
+
+      // Fetch breed information
+      const breedInfoResponse = await axios.get(`https://api.thecatapi.com/v1/breeds/${selectedBreedId}`);
+      const breedData = breedInfoResponse.data;
+
+      // Create informational section in infoDump
+      const infoHeader = document.createElement('h2');
+      infoHeader.textContent = breedData.name;
+      infoDump.appendChild(infoHeader);
+
+      const infoList = document.createElement('ul');
+      infoList.innerHTML = `
+        <li><strong>Origin:</strong> ${breedData.origin}</li>
+        <li><strong>Description:</strong> ${breedData.description}</li>
+        <li><strong>Temperament:</strong> ${breedData.temperament}</li>
+        <li><strong>Life span:</strong> ${breedData.life_span}</li>
+        <li><strong>Adaptability:</strong> ${breedData.adaptability}</li>
+        <li><strong>Affection level:</strong> ${breedData.affection_level}</li>
+        <li><strong>Child friendly:</strong> ${breedData.child_friendly}</li>
+        <li><strong>Dog friendly:</strong> ${breedData.dog_friendly}</li>
+        <li><strong>Energy level:</strong> ${breedData.energy_level}</li>
+        <li><strong>Grooming:</strong> ${breedData.grooming}</li>
+        <li><strong>Health issues:</strong> ${breedData.health_issues}</li>
+        <li><strong>Intelligence:</strong> ${breedData.intelligence}</li>
+        <li><strong>Shedding level:</strong> ${breedData.shedding_level}</li>
+        <li><strong>Social needs:</strong> ${breedData.social_needs}</li>
+        <li><strong>Vocalisation:</strong> ${breedData.vocalisation}</li>
+      `;
+      infoDump.appendChild(infoList);
+
+    } catch (error) {
+      console.error('Error loading breed information:', error);
+    }
+  }
+
+  // Call initialLoad function immediately
+  async function initialLoad() {
+    try {
+      
+      const response = await axios.get('https://api.thecatapi.com/v1/breeds');
+      const breeds = response.data;
+
+      const breedSelect = document.getElementById('breedSelect');
+
+      breeds.forEach(breed => {
+        const option = document.createElement('option');
+        option.value = breed.id;
+        option.textContent = breed.name;
+        breedSelect.appendChild(option);
+      });
+
+      // Create initial carousel
+      if (breeds.length > 0) {
+        const initialBreedId = breeds[0].id;
+        await updateCarousel(initialBreedId);
+      }
+
+    } catch (error) {
+      console.error('Error loading breeds:', error);
+    }
+  }
+
+  // Event handler for breedSelect
+  const breedSelect = document.getElementById('breedSelect');
+  breedSelect.addEventListener('change', async (event) => {
+    const selectedBreedId = event.target.value;
+    await updateCarousel(selectedBreedId);
+  });
+
+  // Call initialLoad function immediately
+  initialLoad();
+});
+
 /**
  * 5. Add axios interceptors to log the time between request and response to the console.
  * - Hint: you already have access to code that does this!
