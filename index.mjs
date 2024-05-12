@@ -242,7 +242,7 @@ import axios from 'axios';
 
 document.addEventListener("DOMContentLoaded", async (event) => {
   // Set default headers with API key
-  axios.defaults.headers.common['x-api-key'] = 'live_AZxU2Ob52eWfjYudw0dHJLfjd9IWmTaUxFMYat5MNV2skaBlKhQOHqueCbsCxm4b'; 
+  axios.defaults.headers.common['x-api-key'] = ''; 
 
   // Function to clear and repopulate carousel
   async function updateCarousel(selectedBreedId) {
@@ -357,6 +357,74 @@ document.addEventListener("DOMContentLoaded", async (event) => {
  * - Add a console.log statement to indicate when requests begin.
  * - As an added challenge, try to do this on your own without referencing the lesson material.
  */
+import axios from 'axios';
+
+document.addEventListener("DOMContentLoaded", async (event) => {
+  // Set default headers with API key
+  axios.defaults.headers.common['x-api-key'] = ''; 
+
+  // Axios request interceptor
+  axios.interceptors.request.use(config => {
+    config.metadata = { startTime: new Date() }; 
+    console.log(`Request started for ${config.url} at ${config.metadata.startTime}`);
+    return config;
+  }, error => {
+    return Promise.reject(error);
+  });
+
+  // Axios response interceptor
+  axios.interceptors.response.use(response => {
+    const endTime = new Date();
+    const startTime = response.config.metadata.startTime;
+    const elapsedTime = endTime - startTime;
+    console.log(`Request for ${response.config.url} completed in ${elapsedTime} milliseconds`);
+    return response;
+  }, error => {
+    return Promise.reject(error);
+  });
+
+  // Function to clear and repopulate carousel
+  async function updateCarousel(selectedBreedId) {
+    // Your updateCarousel function code here
+  }
+
+  // Call initialLoad function within DOMContentLoaded event listener
+  async function initialLoad() {
+    try {
+      // Fetch breeds
+      const response = await axios.get('https://api.thecatapi.com/v1/breeds');
+      const breeds = response.data;
+
+      const breedSelect = document.getElementById('breedSelect');
+
+      breeds.forEach(breed => {
+        const option = document.createElement('option');
+        option.value = breed.id;
+        option.textContent = breed.name;
+        breedSelect.appendChild(option);
+      });
+
+      // Create initial carousel
+      if (breeds.length > 0) {
+        const initialBreedId = breeds[0].id;
+        await updateCarousel(initialBreedId);
+      }
+
+    } catch (error) {
+      console.error('Error loading breeds:', error);
+    }
+  }
+
+  // Event handler for breedSelect
+  const breedSelect = document.getElementById('breedSelect');
+  breedSelect.addEventListener('change', async (event) => {
+    const selectedBreedId = event.target.value;
+    await updateCarousel(selectedBreedId);
+  });
+
+  // Call initialLoad function immediately
+  initialLoad();
+});
 
 /**
  * 6. Next, we'll create a progress bar to indicate the request is in progress.
@@ -373,6 +441,89 @@ document.addEventListener("DOMContentLoaded", async (event) => {
  *   once or twice per request to this API. This is still a concept worth familiarizing yourself
  *   with for future projects.
  */
+import axios from 'axios';
+
+document.addEventListener("DOMContentLoaded", async (event) => {
+  const progressBar = document.getElementById('progressBar');
+  progressBar.style.width = '0%'; 
+
+  // Set default headers with API key
+  axios.defaults.headers.common['x-api-key'] = ''; 
+
+  // Axios request interceptor
+  axios.interceptors.request.use(config => {
+    config.metadata = { startTime: new Date() }; 
+    progressBar.style.width = '0%'; 
+    console.log(`Request started for ${config.url} at ${config.metadata.startTime}`);
+    return config;
+  }, error => {
+    return Promise.reject(error);
+  });
+
+  // Axios response interceptor
+  axios.interceptors.response.use(response => {
+    const endTime = new Date();
+    const startTime = response.config.metadata.startTime;
+    const elapsedTime = endTime - startTime;
+    console.log(`Request for ${response.config.url} completed in ${elapsedTime} milliseconds`);
+    progressBar.style.width = '100%'; 
+    return response;
+  }, error => {
+    progressBar.style.width = '0%'; 
+    return Promise.reject(error);
+  });
+
+  // Function to update progress bar
+  function updateProgress(event) {
+    const progress = Math.round((event.loaded / event.total) * 100);
+    console.log('Progress:', progress);
+    progressBar.style.width = `${progress}%`;
+  }
+
+  // Function to clear and repopulate carousel
+  async function updateCarousel(selectedBreedId) {
+    // Your updateCarousel function code here
+  }
+
+  // Call initialLoad function within DOMContentLoaded event listener
+  async function initialLoad() {
+    try {
+      // Fetch breeds
+      const response = await axios.get('https://api.thecatapi.com/v1/breeds', {
+        onDownloadProgress: updateProgress // Pass updateProgress function to handle download progress
+      });
+      const breeds = response.data;
+
+      const breedSelect = document.getElementById('breedSelect');
+
+      breeds.forEach(breed => {
+        const option = document.createElement('option');
+        option.value = breed.id;
+        option.textContent = breed.name;
+        breedSelect.appendChild(option);
+      });
+
+      // Create initial carousel
+      if (breeds.length > 0) {
+        const initialBreedId = breeds[0].id;
+        await updateCarousel(initialBreedId);
+      }
+
+    } catch (error) {
+      console.error('Error loading breeds:', error);
+    }
+  }
+
+  // Event handler for breedSelect
+  const breedSelect = document.getElementById('breedSelect');
+  breedSelect.addEventListener('change', async (event) => {
+    const selectedBreedId = event.target.value;
+    await updateCarousel(selectedBreedId);
+  });
+
+  // Call initialLoad function immediately
+  initialLoad();
+});
 
 /**
  * 7. As a final element of progress indication, add the following to your axios interceptors:
