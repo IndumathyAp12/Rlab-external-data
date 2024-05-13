@@ -118,112 +118,112 @@ async function initialLoad() {
  * - Each new selection should clear, re-populate, and restart the Carousel.
  * - Add a call to this function to the end of your initialLoad function above to create the initial carousel.
  */
-document.addEventListener("DOMContentLoaded", async (event) => {
-    // Function to clear and repopulate carousel
-    async function updateCarousel(selectedBreedId) {
-      const carousel = document.getElementById('carouselExampleControls'); // Updated ID
-      const infoDump = document.getElementById('infoDump');
+// document.addEventListener("DOMContentLoaded", async (event) => {
+//     // Function to clear and repopulate carousel
+//     async function updateCarousel(selectedBreedId) {
+//       const carousel = document.getElementById('carouselExampleControls'); // Updated ID
+//       const infoDump = document.getElementById('infoDump');
   
-      if (!carousel || !infoDump) {
-        console.error("Carousel or infoDump element not found.");
-        return;
-      }
+//       if (!carousel || !infoDump) {
+//         console.error("Carousel or infoDump element not found.");
+//         return;
+//       }
   
-      // Clear carousel and infoDump
-      carousel.querySelector('.carousel-inner').innerHTML = ''; // Clear inner carousel content
-      infoDump.innerHTML = ''; // Clear infoDump content
+//       // Clear carousel and infoDump
+//       carousel.querySelector('.carousel-inner').innerHTML = ''; // Clear inner carousel content
+//       infoDump.innerHTML = ''; // Clear infoDump content
   
-      try {
-        // Fetch information on the selected breed
-        const response = await fetch(`https://api.thecatapi.com/v1/images/search?breed_id=${selectedBreedId}&limit=5`);
-        const breedImages = await response.json();
+//       try {
+//         // Fetch information on the selected breed
+//         const response = await fetch(`https://api.thecatapi.com/v1/images/search?breed_id=${selectedBreedId}&limit=5`);
+//         const breedImages = await response.json();
   
-        // Create carousel elements
-        const carouselInner = carousel.querySelector('.carousel-inner');
-        breedImages.forEach(imageData => {
-          const img = document.createElement('img');
-          img.src = imageData.url;
-          img.alt = 'Cat Image';
-          img.classList.add('d-block', 'w-100'); // Bootstrap classes
-          const carouselItem = document.createElement('div');
-          carouselItem.classList.add('carousel-item');
-          carouselItem.appendChild(img);
-          carouselInner.appendChild(carouselItem);
-        });
+//         // Create carousel elements
+//         const carouselInner = carousel.querySelector('.carousel-inner');
+//         breedImages.forEach(imageData => {
+//           const img = document.createElement('img');
+//           img.src = imageData.url;
+//           img.alt = 'Cat Image';
+//           img.classList.add('d-block', 'w-100'); // Bootstrap classes
+//           const carouselItem = document.createElement('div');
+//           carouselItem.classList.add('carousel-item');
+//           carouselItem.appendChild(img);
+//           carouselInner.appendChild(carouselItem);
+//         });
   
-        // Activate first carousel item
-        carouselInner.firstChild.classList.add('active');
+//         // Activate first carousel item
+//         carouselInner.firstChild.classList.add('active');
   
-        // Fetch breed information
-        const breedInfoResponse = await fetch(`https://api.thecatapi.com/v1/breeds/${selectedBreedId}`);
-        const breedData = await breedInfoResponse.json();
+//         // Fetch breed information
+//         const breedInfoResponse = await fetch(`https://api.thecatapi.com/v1/breeds/${selectedBreedId}`);
+//         const breedData = await breedInfoResponse.json();
   
-        // Create informational section in infoDump
-        const infoHeader = document.createElement('h2');
-        infoHeader.textContent = breedData.name;
-        infoDump.appendChild(infoHeader);
+//         // Create informational section in infoDump
+//         const infoHeader = document.createElement('h2');
+//         infoHeader.textContent = breedData.name;
+//         infoDump.appendChild(infoHeader);
   
-        const infoList = document.createElement('ul');
-        infoList.innerHTML = `
-          <li><strong>Origin:</strong> ${breedData.origin}</li>
-          <li><strong>Description:</strong> ${breedData.description}</li>
-          <li><strong>Temperament:</strong> ${breedData.temperament}</li>
-          <li><strong>Life span:</strong> ${breedData.life_span}</li>
-          <li><strong>Adaptability:</strong> ${breedData.adaptability}</li>
-          <li><strong>Affection level:</strong> ${breedData.affection_level}</li>
-          <li><strong>Child friendly:</strong> ${breedData.child_friendly}</li>
-          <li><strong>Dog friendly:</strong> ${breedData.dog_friendly}</li>
-          <li><strong>Energy level:</strong> ${breedData.energy_level}</li>
-          <li><strong>Grooming:</strong> ${breedData.grooming}</li>
-          <li><strong>Health issues:</strong> ${breedData.health_issues}</li>
-          <li><strong>Intelligence:</strong> ${breedData.intelligence}</li>
-          <li><strong>Shedding level:</strong> ${breedData.shedding_level}</li>
-          <li><strong>Social needs:</strong> ${breedData.social_needs}</li>
-          <li><strong>Vocalisation:</strong> ${breedData.vocalisation}</li>
-        `;
-        infoDump.appendChild(infoList);
+//         const infoList = document.createElement('ul');
+//         infoList.innerHTML = `
+//           <li><strong>Origin:</strong> ${breedData.origin}</li>
+//           <li><strong>Description:</strong> ${breedData.description}</li>
+//           <li><strong>Temperament:</strong> ${breedData.temperament}</li>
+//           <li><strong>Life span:</strong> ${breedData.life_span}</li>
+//           <li><strong>Adaptability:</strong> ${breedData.adaptability}</li>
+//           <li><strong>Affection level:</strong> ${breedData.affection_level}</li>
+//           <li><strong>Child friendly:</strong> ${breedData.child_friendly}</li>
+//           <li><strong>Dog friendly:</strong> ${breedData.dog_friendly}</li>
+//           <li><strong>Energy level:</strong> ${breedData.energy_level}</li>
+//           <li><strong>Grooming:</strong> ${breedData.grooming}</li>
+//           <li><strong>Health issues:</strong> ${breedData.health_issues}</li>
+//           <li><strong>Intelligence:</strong> ${breedData.intelligence}</li>
+//           <li><strong>Shedding level:</strong> ${breedData.shedding_level}</li>
+//           <li><strong>Social needs:</strong> ${breedData.social_needs}</li>
+//           <li><strong>Vocalisation:</strong> ${breedData.vocalisation}</li>
+//         `;
+//         infoDump.appendChild(infoList);
   
-      } catch (error) {
-        console.error('Error loading breed information:', error);
-      }
-    }
+//       } catch (error) {
+//         console.error('Error loading breed information:', error);
+//       }
+//     }
   
-    // Call initialLoad function immediately
-    async function initialLoad() {
-      try {
-        const response = await fetch('https://api.thecatapi.com/v1/breeds');
-        const breeds = await response.json();
+//     // Call initialLoad function immediately
+//     async function initialLoad() {
+//       try {
+//         const response = await fetch('https://api.thecatapi.com/v1/breeds');
+//         const breeds = await response.json();
   
-        const breedSelect = document.getElementById('breedSelect');
+//         const breedSelect = document.getElementById('breedSelect');
   
-        breeds.forEach(breed => {
-          const option = document.createElement('option');
-          option.value = breed.id;
-          option.textContent = breed.name;
-          breedSelect.appendChild(option);
-        });
+//         breeds.forEach(breed => {
+//           const option = document.createElement('option');
+//           option.value = breed.id;
+//           option.textContent = breed.name;
+//           breedSelect.appendChild(option);
+//         });
   
-        // Create initial carousel
-        if (breeds.length > 0) {
-          const initialBreedId = breeds[0].id;
-          await updateCarousel(initialBreedId);
-        }
+//         // Create initial carousel
+//         if (breeds.length > 0) {
+//           const initialBreedId = breeds[0].id;
+//           await updateCarousel(initialBreedId);
+//         }
   
-      } catch (error) {
-        console.error('Error loading breeds:', error);
-      }
-    }
+//       } catch (error) {
+//         console.error('Error loading breeds:', error);
+//       }
+//     }
   
-    // Event handler for breedSelect
-    const breedSelect = document.getElementById('breedSelect');
-    breedSelect.addEventListener('change', async (event) => {
-      const selectedBreedId = event.target.value;
-      await updateCarousel(selectedBreedId);
-    });
+//     // Event handler for breedSelect
+//     const breedSelect = document.getElementById('breedSelect');
+//     breedSelect.addEventListener('change', async (event) => {
+//       const selectedBreedId = event.target.value;
+//       await updateCarousel(selectedBreedId);
+//     });
   
-    // Call initialLoad function immediately
-    initialLoad();
-  });
+//     // Call initialLoad function immediately
+//     initialLoad();
+//   });
   
   
 /**
@@ -238,7 +238,7 @@ document.addEventListener("DOMContentLoaded", async (event) => {
  *   by setting a default header with your API key so that you do not have to
  *   send it manually with all of your requests! You can also set a default base URL!
  */
-import axios from 'axios';
+
 
 document.addEventListener("DOMContentLoaded", async (event) => {
   // Set default headers with API key
@@ -357,7 +357,7 @@ document.addEventListener("DOMContentLoaded", async (event) => {
  * - Add a console.log statement to indicate when requests begin.
  * - As an added challenge, try to do this on your own without referencing the lesson material.
  */
-import axios from 'axios';
+
 
 document.addEventListener("DOMContentLoaded", async (event) => {
   // Set default headers with API key
@@ -385,7 +385,7 @@ document.addEventListener("DOMContentLoaded", async (event) => {
 
   // Function to clear and repopulate carousel
   async function updateCarousel(selectedBreedId) {
-    // Your updateCarousel function code here
+    
   }
 
   // Call initialLoad function within DOMContentLoaded event listener
@@ -441,7 +441,7 @@ document.addEventListener("DOMContentLoaded", async (event) => {
  *   once or twice per request to this API. This is still a concept worth familiarizing yourself
  *   with for future projects.
  */
-import axios from 'axios';
+
 
 document.addEventListener("DOMContentLoaded", async (event) => {
   const progressBar = document.getElementById('progressBar');
@@ -482,7 +482,7 @@ document.addEventListener("DOMContentLoaded", async (event) => {
 
   // Function to clear and repopulate carousel
   async function updateCarousel(selectedBreedId) {
-    // Your updateCarousel function code here
+    
   }
 
   // Call initialLoad function within DOMContentLoaded event listener
@@ -530,6 +530,91 @@ document.addEventListener("DOMContentLoaded", async (event) => {
  * - In your request interceptor, set the body element's cursor style to "progress."
  * - In your response interceptor, remove the progress cursor style from the body element.
  */
+
+document.addEventListener("DOMContentLoaded", async (event) => {
+  const progressBar = document.getElementById('progressBar');
+  progressBar.style.width = '0%'; 
+
+  // Set default headers with API key
+  axios.defaults.headers.common['x-api-key'] = ''; 
+  // Axios request interceptor
+  axios.interceptors.request.use(config => {
+    config.metadata = { startTime: new Date() }; 
+    progressBar.style.width = '0%'; 
+    document.body.style.cursor = 'progress'; 
+    console.log(`Request started for ${config.url} at ${config.metadata.startTime}`);
+    return config;
+  }, error => {
+    return Promise.reject(error);
+  });
+
+  // Axios response interceptor
+  axios.interceptors.response.use(response => {
+    const endTime = new Date();
+    const startTime = response.config.metadata.startTime;
+    const elapsedTime = endTime - startTime;
+    console.log(`Request for ${response.config.url} completed in ${elapsedTime} milliseconds`);
+    progressBar.style.width = '100%'; 
+    document.body.style.cursor = 'default';
+    return response;
+  }, error => {
+    progressBar.style.width = '0%'; 
+    document.body.style.cursor = 'default'; 
+    return Promise.reject(error);
+  });
+
+  // Function to update progress bar
+  function updateProgress(event) {
+    const progress = Math.round((event.loaded / event.total) * 100);
+    console.log('Progress:', progress);
+    progressBar.style.width = `${progress}%`; 
+  }
+
+  // Function to clear and repopulate carousel
+  async function updateCarousel(selectedBreedId) {
+    
+  }
+
+  // Call initialLoad function within DOMContentLoaded event listener
+  async function initialLoad() {
+    try {
+      // Fetch breeds
+      const response = await axios.get('https://api.thecatapi.com/v1/breeds', {
+        onDownloadProgress: updateProgress 
+      });
+      const breeds = response.data;
+
+      const breedSelect = document.getElementById('breedSelect');
+
+      breeds.forEach(breed => {
+        const option = document.createElement('option');
+        option.value = breed.id;
+        option.textContent = breed.name;
+        breedSelect.appendChild(option);
+      });
+
+      // Create initial carousel
+      if (breeds.length > 0) {
+        const initialBreedId = breeds[0].id;
+        await updateCarousel(initialBreedId);
+      }
+
+    } catch (error) {
+      console.error('Error loading breeds:', error);
+    }
+  }
+
+  // Event handler for breedSelect
+  const breedSelect = document.getElementById('breedSelect');
+  breedSelect.addEventListener('change', async (event) => {
+    const selectedBreedId = event.target.value;
+    await updateCarousel(selectedBreedId);
+  });
+
+  // Call initialLoad function immediately
+  initialLoad();
+});
+
 /**
  * 8. To practice posting data, we'll create a system to "favourite" certain images.
  * - The skeleton of this function has already been created for you.
